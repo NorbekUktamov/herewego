@@ -1,8 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:herewego/pages/home_page.dart';
+import 'package:herewego/pages/signin_page.dart';
+import 'package:herewego/pages/signup_page.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    // options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -15,9 +22,15 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
 
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.red,
       ),
-      home: HomePage(),
+      home: SignInPage(),
+      routes: {
+        HomePage.id:(context)=>HomePage(),
+        SignInPage.id:(context) => SignInPage(),
+        SignUpPage.id:(context) => SignUpPage(),
+
+      },
     );
   }
 }
