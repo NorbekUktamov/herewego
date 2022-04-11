@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:herewego/pages/detail_page.dart';
 import 'package:herewego/pages/home_page.dart';
 import 'package:herewego/pages/signin_page.dart';
 import 'package:herewego/pages/signup_page.dart';
@@ -15,6 +17,24 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+
+
+  // Widget _startPage() {
+  //   return StreamBuilder<User>(
+  //     stream: FirebaseAuth.instance.onAuthStateChanged,
+  //     builder: (BuildContext context, snapshot) {
+  //       if (snapshot.hasData) {
+  //         Prefs.saveUserId(snapshot.data.uid);
+  //         return HomePage();
+  //       } else {
+  //         Prefs.removeUserId();
+  //         return SignInPage();
+  //       }
+  //     },
+  //   );
+  // }
+
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -24,7 +44,7 @@ class MyApp extends StatelessWidget {
 
         primarySwatch: Colors.red,
       ),
-      home: SignInPage(),
+      home: HomePage(),
       routes: {
         HomePage.id:(context)=>HomePage(),
         SignInPage.id:(context) => SignInPage(),
