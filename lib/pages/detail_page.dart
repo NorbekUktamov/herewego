@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'home_page.dart';
 
@@ -21,6 +23,9 @@ class _DetailPageState extends State<DetailPage> {
   var contentController = TextEditingController();
   var firstnameController=TextEditingController();
   var dataController=TextEditingController();
+
+  File? _photo;
+  final ImagePicker _picker = ImagePicker();
 
   _addPost() async {
     String lastname = lastnameController.text.toString();
@@ -46,6 +51,18 @@ class _DetailPageState extends State<DetailPage> {
 
   }
 
+  Future imgFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _photo = File(pickedFile.path);
+        // uploadFile();
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +78,18 @@ class _DetailPageState extends State<DetailPage> {
               padding: EdgeInsets.all(30),
               child: Column(
                 children: [
+                  GestureDetector(
+                    onTap: imgFromGallery,
+                    child:  Container(
+                      width: 100,
+                      height: 100,
+                      child: _photo != null ?
+                      Image.file(_photo!,fit: BoxFit.cover,) :
+                      Image.asset("assets/images/ic_upload.png"),
+                    ),
+                  ),
+
+
                   SizedBox(
                     height: 15,
                   ),
