@@ -5,34 +5,42 @@ import 'package:herewego/pages/detail_page.dart';
 import 'package:herewego/pages/home_page.dart';
 import 'package:herewego/pages/signin_page.dart';
 import 'package:herewego/pages/signup_page.dart';
+import 'package:herewego/service/auth_service.dart';
+import 'package:herewego/service/hive_DB.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    // options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(MyApp());
+  await Firebase.initializeApp();
+  await Hive.initFlutter();
+  await Hive.openBox(HiveDB.nameDB);
+  runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
 
 
-  // Widget _startPage() {
-  //   return StreamBuilder<User>(
-  //     stream: FirebaseAuth.instance.onAuthStateChanged,
-  //     builder: (BuildContext context, snapshot) {
-  //       if (snapshot.hasData) {
-  //         Prefs.saveUserId(snapshot.data.uid);
-  //         return HomePage();
-  //       } else {
-  //         Prefs.removeUserId();
-  //         return SignInPage();
-  //       }
-  //     },
-  //   );
-  // }
+  Widget _startPage(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: AuthenticationService.auth.authStateChanges(),
+      builder: (context, value) {
+        if(value.hasData) {
+          // SharedPreferenceDB.storeString(StorageKeys.UID, value.data!.uid);
+          HiveDB.putUser(value.data!);
+          return const HomePage();
+        } else {
+          // SharedPreferenceDB.clear(StorageKeys.UID);
+          HiveDB.removeUser();
+          return const SignIn();
+        }
+      },
+    );
+  }
 
 
   // This widget is the root of your application.
@@ -44,11 +52,12 @@ class MyApp extends StatelessWidget {
 
         primarySwatch: Colors.red,
       ),
-      home: HomePage(),
+      home: _startPage(context),
       routes: {
-        HomePage.id:(context)=>HomePage(),
-        SignInPage.id:(context) => SignInPage(),
-        SignUpPage.id:(context) => SignUpPage(),
+        HomePage.id:(context)=> const HomePage(),
+        SignIn.id:(context) => const SignIn(),
+        SignUp.id:(context) => const SignUp(),
+        DetailPage.id: (context) => const DetailPage()
 
       },
     );

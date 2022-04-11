@@ -1,132 +1,182 @@
 
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:herewego/pages/signin_page.dart';
 
 import '../service/auth_service.dart';
-import '../service/prefs_service.dart';
-import '../service/utils_service.dart';
+import '../service/hive_DB.dart';
 import 'home_page.dart';
 
-class SignUpPage extends StatefulWidget {
-  static final String id = "signup_page";
+class SignUp extends StatefulWidget {
+  const SignUp({Key? key}) : super(key: key);
+  static const String id = '/sign_up';
 
   @override
-  _SignUpPageState createState() => _SignUpPageState();
+  _SignUpState createState() => _SignUpState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _SignUpState extends State<SignUp> {
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
-  var isLoading = false;
+  bool _errorOccurred = false;
+  bool _isLoading = false;
+  bool isHidden = true;
 
-  var fullnameController = TextEditingController();
-  var emailController = TextEditingController();
-  var passwordController = TextEditingController();
-
-  _doSignUp(){
-    String name = fullnameController.text.toString().trim();
-    String email = emailController.text.toString().trim();
-    String password = passwordController.text.toString().trim();
-    if(name.isEmpty || email.isEmpty || password.isEmpty) return;
-
+  void _doSignUp(){
+    String firstName = _firstNameController.text.toString().trim();
+    String lastName = _lastNameController.text.toString().trim();
+    String email = _emailController.text.toString().trim();
+    String password = _passwordController.text.toString().trim();
+    if(firstName.isEmpty || lastName.isEmpty || email.isEmpty || password.isEmpty){
+      setState(() {
+        _errorOccurred = true;
+      });
+      return;
+    }
     setState(() {
-      isLoading = true;
+      _isLoading = true;
     });
-    AuthService()
-        .signUp(email: email, password: password)
-        .then((result) {
-      if (result == null) {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => HomePage()));
-      } else {
-        Utils.fireToast("Check your email or password");
+    AuthenticationService.signUp(email: email, password: password).then((value) async {
+      setState(() {
+        _isLoading = false;
+      });
+      if (value != null) {
+        HiveDB.putUser(value);
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => const HomePage()));
+      }
+      else{
+        Fluttertoast.showToast(
+            msg: "Check your data",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
       }
     });
   }
 
-  // _getFirebaseUser(FirebaseUser firebaseUser) async {
-  //   setState(() {
-  //     isLoading = false;
-  //   });
-  //   if (firebaseUser != null) {
-  //     await Prefs.saveUserId(firebaseUser.uid);
-  //     Navigator.pushReplacementNamed(context, HomePage.id);
-  //   } else {
-  //     Utils.fireToast("Check your informations");
-  //   }
-  // }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+  }
 
+
+  _errorText(String text) {
+    if (text.trim().toString().isEmpty) {
+      return "Can't be empty";
+    }
+    return null;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextField(
-                  controller: fullnameController,
-                  decoration: InputDecoration(
-                      hintText: "Fullname"
-                  ),
-                ),
-                SizedBox(height: 10,),
-                TextField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                      hintText: "Email"
-                  ),
-                ),
-                SizedBox(height: 10,),
-                TextField(
-                  obscureText: true,
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                      hintText: "Password"
-                  ),
-                ),
-                SizedBox(height: 10,),
-                Container(
-                  width: double.infinity,
-                  height: 45,
-                  child: FlatButton(
-                    onPressed: _doSignUp,
-                    color: Colors.red,
-                    child: Text("Sign Up",style: TextStyle(color: Colors.white),),
-                  ),
-                ),
-                SizedBox(height: 10,),
-                Container(
-                  width: double.infinity,
-                  height: 45,
-                  child: FlatButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, SignInPage.id);
-                    },
-                    child: Row(
+        resizeToAvoidBottomInset: false,
+        body: Stack(
+          children: [
+            Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 25),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // #first name
+                    TextField(
+                      controller: _firstNameController,
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                        hintText: 'First Name',
+                        errorText: _errorOccurred ? _errorText(_firstNameController.text) : null,
+                      ),
+                      onChanged: (_) => setState(() {}),
+                    ),
+                    const SizedBox(height: 10),
+                    // #last name
+                    TextField(
+                      controller: _lastNameController,
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                        hintText: 'Last Name',
+                        errorText: _errorOccurred ? _errorText(_lastNameController.text) : null,
+                      ),
+                      onChanged: (_) => setState(() {}),
+                    ),
+                    const SizedBox(height: 10),
+                    // #email address
+                    TextField(
+                      controller: _emailController,
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                        hintText: 'Email',
+                        errorText: _errorOccurred ? _errorText(_emailController.text) : null,
+                      ),
+                      onChanged: (_) => setState(() {}),
+                    ),
+                    const SizedBox(height: 10),
+                    // #password
+                    TextField(
+                      controller: _passwordController,
+                      obscureText: isHidden,
+                      decoration: InputDecoration(
+                        hintText: 'Password',
+                        errorText: _errorOccurred ? _errorText(_passwordController.text) : null,
+                        suffixIcon: IconButton(
+                            onPressed: (){
+                              setState(() {
+                                isHidden = !isHidden;
+                              });},
+                            icon: Icon(isHidden?Icons.visibility_off_outlined:Icons.visibility_outlined)
+                        ),
+                      ),
+                      onChanged: (_) => setState(() {}),
+                    ),
+                    const SizedBox(height: 10),
+                    // #sign up button
+                    MaterialButton(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        height: 50,
+                        minWidth: MediaQuery.of(context).size.width - 50,
+                        color: CupertinoColors.systemRed,
+                        textColor: Colors.white,
+                        child: const Text('Sign up'),
+                        onPressed: (){ _doSignUp(); }
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text("Already have an account?",style: TextStyle(color: Colors.black),),
-                        SizedBox(width: 10,),
-                        Text("Sign In",style: TextStyle(color: Colors.black),),
+                        const Text('Already have an account? '),
+                        GestureDetector(
+                          child: const Text('Sign In', style: TextStyle(fontWeight: FontWeight.bold, color: CupertinoColors.systemRed),),
+                          onTap: (){
+                            Navigator.pushReplacement(context, MaterialPageRoute (builder: (BuildContext context) => const SignIn()));
+                          },
+                        )
                       ],
-                    ),
-                  ),
+                    )
+                  ],
                 ),
-
-              ],
+              ),
             ),
-          ),
-
-          isLoading?
-          Center(
-            child: CircularProgressIndicator(),
-          ): SizedBox.shrink(),
-        ],
-      ),
+            Visibility(
+                visible: _isLoading,
+                child: const Center(
+                    child: CircularProgressIndicator(color: CupertinoColors.systemRed, backgroundColor: Colors.white)
+                )
+            )
+          ],
+        )
     );
   }
-
 }

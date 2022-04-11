@@ -1,31 +1,24 @@
-class Post {
-  String userId;
-  String title;
-  String id;
-  String content;
-  String img_url;
+class Post{
+  late String userId;
+  late String title;
+  late String content;
+  late String imageURL;
+  late String date;
 
-  Post({
-    required this.userId,
-    required this.title,
-    required this.id,
-    required this.content,
-    required this.img_url,
-  });
-  static Post fromJson(Map<String, dynamic> json) => Post(
-    title: json['title'],
-    userId: json['userId'],
-    id: json['id'],
-    content: json['content'],
-    img_url: json['img_url'],
-  );
+  Post({required this.userId, required this.title, required this.content, required this.imageURL, required this.date});
 
+  Post.fromJson(Map<String, dynamic> json)
+      : userId = json['ID'],
+        title = json['title'],
+        content = json['content'],
+        imageURL = json['imageURL'],
+        date = json['date'];
 
   Map<String, dynamic> toJson() => {
-    'userId': userId,
-    'title': title,
-    'id': id,
-    'content': content,
-    'img_url': img_url,
+    'ID' : userId,
+    'title' : title,
+    'content' : content,
+    'imageURL' : imageURL,
+    'date' : date,
   };
 }
