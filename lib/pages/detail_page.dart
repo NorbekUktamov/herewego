@@ -1,10 +1,7 @@
 import 'dart:io';
-
-
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../models/post_model.dart';
 import '../service/hive_DB.dart';
 import '../service/rtdb_service.dart';
@@ -93,8 +90,8 @@ class _DetailPageState extends State<DetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detail'),
-        centerTitle: true,
+        title: const Text('Add Post'),
+
       ),
 
       body: Stack(
@@ -109,7 +106,8 @@ class _DetailPageState extends State<DetailPage> {
                 children: [
                   // #add image
                   Container(
-                    height: 350,
+                    height: 150,
+                    width: 100,
                     margin: const EdgeInsets.symmetric(vertical: 10.0),
                     clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
@@ -125,6 +123,7 @@ class _DetailPageState extends State<DetailPage> {
                       onTap: _getImage,
                     ),
                   ),
+                  SizedBox(height: 20,),
 
                   // #title
                   TextField(
@@ -136,7 +135,7 @@ class _DetailPageState extends State<DetailPage> {
                           enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.all(Radius.circular(10)),
                               borderSide: BorderSide(
-                                color: CupertinoColors.systemRed,
+
                                 width: 3,
                               )
                           ),
@@ -158,20 +157,19 @@ class _DetailPageState extends State<DetailPage> {
                       maxLines: null,
                       textInputAction: TextInputAction.newline,
                       decoration: const InputDecoration(
-                        // filled: true,
-                        // fillColor: Colors.grey[100],
+
                           hintText: 'Content',
                           enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.all(Radius.circular(10)),
                               borderSide: BorderSide(
-                                color: CupertinoColors.systemRed,
+
                                 width: 3,
                               )
                           ),
                           focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.all(Radius.circular(10)),
                               borderSide: BorderSide(
-                                color: CupertinoColors.systemRed,
+
                                 width: 3,
                               )
                           )
@@ -186,7 +184,7 @@ class _DetailPageState extends State<DetailPage> {
                         borderRadius: BorderRadius.circular(30)
                     ),
                     height: 45,
-                    child: const Text('Save', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),),
+                    child: const Text('Add', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),),
                     onPressed: _uploadImage,
                   ),
                   const SizedBox(height: 10)

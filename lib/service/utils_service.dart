@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class Utils {
-
   static void fireToast(String msg) {
     Fluttertoast.showToast(
         msg: msg,
@@ -13,7 +12,4 @@ class Utils {
         textColor: Colors.white,
         fontSize: 16.0);
   }
-
-
-
 }

@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -26,12 +25,15 @@ class _SignUpState extends State<SignUp> {
   bool _isLoading = false;
   bool isHidden = true;
 
-  void _doSignUp(){
+  void _doSignUp() {
     String firstName = _firstNameController.text.toString().trim();
     String lastName = _lastNameController.text.toString().trim();
     String email = _emailController.text.toString().trim();
     String password = _passwordController.text.toString().trim();
-    if(firstName.isEmpty || lastName.isEmpty || email.isEmpty || password.isEmpty){
+    if (firstName.isEmpty ||
+        lastName.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty) {
       setState(() {
         _errorOccurred = true;
       });
@@ -40,15 +42,18 @@ class _SignUpState extends State<SignUp> {
     setState(() {
       _isLoading = true;
     });
-    AuthenticationService.signUp(email: email, password: password).then((value) async {
+    AuthenticationService.signUp(email: email, password: password)
+        .then((value) async {
       setState(() {
         _isLoading = false;
       });
       if (value != null) {
         HiveDB.putUser(value);
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => const HomePage()));
-      }
-      else{
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => const HomePage()));
+      } else {
         Fluttertoast.showToast(
             msg: "Check your data",
             toastLength: Toast.LENGTH_SHORT,
@@ -56,8 +61,7 @@ class _SignUpState extends State<SignUp> {
             timeInSecForIosWeb: 1,
             backgroundColor: Colors.red,
             textColor: Colors.white,
-            fontSize: 16.0
-        );
+            fontSize: 16.0);
       }
     });
   }
@@ -72,13 +76,13 @@ class _SignUpState extends State<SignUp> {
     _passwordController.dispose();
   }
 
-
   _errorText(String text) {
     if (text.trim().toString().isEmpty) {
       return "Can't be empty";
     }
     return null;
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,7 +101,9 @@ class _SignUpState extends State<SignUp> {
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                         hintText: 'First Name',
-                        errorText: _errorOccurred ? _errorText(_firstNameController.text) : null,
+                        errorText: _errorOccurred
+                            ? _errorText(_firstNameController.text)
+                            : null,
                       ),
                       onChanged: (_) => setState(() {}),
                     ),
@@ -108,7 +114,9 @@ class _SignUpState extends State<SignUp> {
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                         hintText: 'Last Name',
-                        errorText: _errorOccurred ? _errorText(_lastNameController.text) : null,
+                        errorText: _errorOccurred
+                            ? _errorText(_lastNameController.text)
+                            : null,
                       ),
                       onChanged: (_) => setState(() {}),
                     ),
@@ -119,7 +127,9 @@ class _SignUpState extends State<SignUp> {
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                         hintText: 'Email',
-                        errorText: _errorOccurred ? _errorText(_emailController.text) : null,
+                        errorText: _errorOccurred
+                            ? _errorText(_emailController.text)
+                            : null,
                       ),
                       onChanged: (_) => setState(() {}),
                     ),
@@ -130,37 +140,52 @@ class _SignUpState extends State<SignUp> {
                       obscureText: isHidden,
                       decoration: InputDecoration(
                         hintText: 'Password',
-                        errorText: _errorOccurred ? _errorText(_passwordController.text) : null,
+                        errorText: _errorOccurred
+                            ? _errorText(_passwordController.text)
+                            : null,
                         suffixIcon: IconButton(
-                            onPressed: (){
+                            onPressed: () {
                               setState(() {
                                 isHidden = !isHidden;
-                              });},
-                            icon: Icon(isHidden?Icons.visibility_off_outlined:Icons.visibility_outlined)
-                        ),
+                              });
+                            },
+                            icon: Icon(isHidden
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined)),
                       ),
                       onChanged: (_) => setState(() {}),
                     ),
                     const SizedBox(height: 10),
                     // #sign up button
                     MaterialButton(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
                         height: 50,
                         minWidth: MediaQuery.of(context).size.width - 50,
                         color: CupertinoColors.systemRed,
                         textColor: Colors.white,
                         child: const Text('Sign up'),
-                        onPressed: (){ _doSignUp(); }
-                    ),
+                        onPressed: () {
+                          _doSignUp();
+                        }),
                     const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         const Text('Already have an account? '),
                         GestureDetector(
-                          child: const Text('Sign In', style: TextStyle(fontWeight: FontWeight.bold, color: CupertinoColors.systemRed),),
-                          onTap: (){
-                            Navigator.pushReplacement(context, MaterialPageRoute (builder: (BuildContext context) => const SignIn()));
+                          child: const Text(
+                            'Sign In',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: CupertinoColors.systemRed),
+                          ),
+                          onTap: () {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        const SignIn()));
                           },
                         )
                       ],
@@ -172,11 +197,10 @@ class _SignUpState extends State<SignUp> {
             Visibility(
                 visible: _isLoading,
                 child: const Center(
-                    child: CircularProgressIndicator(color: CupertinoColors.systemRed, backgroundColor: Colors.white)
-                )
-            )
+                    child: CircularProgressIndicator(
+                        color: CupertinoColors.systemRed,
+                        backgroundColor: Colors.white)))
           ],
-        )
-    );
+        ));
   }
 }

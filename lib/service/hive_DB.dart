@@ -1,20 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hive/hive.dart';
 
-class HiveDB{
+class HiveDB {
   static String nameDB = "GK";
   static var box = Hive.box(nameDB);
 
-  static putUser(User user){
-    box.put("user_id",user.uid);
+  static putUser(User user) {
+    box.put("user_id", user.uid);
   }
 
-  static getUser(){
+  static getUser() {
     String userId = box.get("user_id");
     return userId;
   }
 
-  static removeUser(){
+  static removeUser() {
     box.delete("user_id");
   }
 }

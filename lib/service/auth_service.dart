@@ -1,14 +1,12 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:herewego/service/prefs_service.dart';
 import 'package:herewego/service/utils_service.dart';
 
-
 import '../pages/signin_page.dart';
 
-class AuthenticationService{
+class AuthenticationService {
   static final auth = FirebaseAuth.instance;
 
   static Future<User?> signUp(
@@ -71,7 +69,8 @@ class AuthenticationService{
   }
 
   static void signOut(BuildContext context) async {
-    await auth.signOut().then((value) =>
-        Navigator.pushReplacementNamed(context, SignIn.id));
+    await auth
+        .signOut()
+        .then((value) => Navigator.pushReplacementNamed(context, SignIn.id));
   }
 }

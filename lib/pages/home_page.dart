@@ -68,8 +68,8 @@ class _HomePageState extends State<HomePage>{
     return Scaffold(
       appBar: AppBar(
         backgroundColor: CupertinoColors.systemRed,
-        title: const Text('Home'),
-        centerTitle: true,
+        title: const Text('Posts'),
+
         actions: [
           IconButton(
               icon: const Icon(Icons.logout),
@@ -127,7 +127,7 @@ class _HomePageState extends State<HomePage>{
                 child: list[list.length - 1 - index].imageURL == 'no image'
                     ? Padding(
                   padding: const EdgeInsets.symmetric(vertical: 15.0),
-                  // child: Image.asset('assets/icon/default_image.png', color: Colors.red),
+                   child: Image.asset('assets/images/ic_default.png', ),
                 )
                     : Image.network(list[list.length - 1 - index].imageURL, fit: BoxFit.cover),
               ),

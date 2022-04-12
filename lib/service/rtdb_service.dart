@@ -4,7 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import '../models/post_model.dart';
 
-class RealtimeDB{
+class RealtimeDB {
   static final _database = FirebaseDatabase.instance.ref();
   static const String apiPost = 'posts';
 
@@ -13,7 +13,8 @@ class RealtimeDB{
     Query _query = _database.child(apiPost).orderByChild('ID').equalTo(id);
     DatabaseEvent result = await _query.once();
     for (var element in result.snapshot.children) {
-      list.add(Post.fromJson(Map<String,dynamic>.from(element.value as Map<dynamic,dynamic>)));
+      list.add(Post.fromJson(
+          Map<String, dynamic>.from(element.value as Map<dynamic, dynamic>)));
     }
     // list = result.snapshot.children.map((json) => Post.fromJson(Map<String, dynamic>.from(json.value as Map))).toList();
     return list;
@@ -24,13 +25,12 @@ class RealtimeDB{
     return _database.onChildAdded;
   }
 
-  static PUT(Post post,String key,BuildContext context)async{
+  static PUT(Post post, String key, BuildContext context) async {
     _database.child("post").child(key).set(post.toJson());
     Navigator.pop(context);
   }
 
-  static DELETE({key}){
+  static DELETE({key}) {
     _database.child(key).remove();
   }
-
 }
