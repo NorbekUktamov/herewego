@@ -26,11 +26,11 @@ class MyApp extends StatelessWidget {
       stream: AuthenticationService.auth.authStateChanges(),
       builder: (context, value) {
         if (value.hasData) {
-          // SharedPreferenceDB.storeString(StorageKeys.UID, value.data!.uid);
+  
           HiveDB.putUser(value.data!);
           return const HomePage();
         } else {
-          // SharedPreferenceDB.clear(StorageKeys.UID);
+     
           HiveDB.removeUser();
           return const SignIn();
         }
